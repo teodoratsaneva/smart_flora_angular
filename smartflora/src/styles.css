@@ -1,1 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  --color-bg: #f4f7f5;
+  --color-surface: #ffffff;
+  --color-text: #333333;
+  --color-text-muted: #555555;
+  --color-primary: #2e7d32;
+  --color-primary-contrast: #ffffff;
+  --color-primary-disabled: #a5d6a7;
+  --color-border: #cccccc;
+  --color-error: #c62828;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #121212;
+  --color-surface: #1e1e1e;
+  --color-text: #f0f0f0;
+  --color-text-muted: #b0b0b0;
+  --color-primary: #66bb6a;
+  --color-primary-contrast: #0d0d0d;
+  --color-primary-disabled: #3a5a3d;
+  --color-border: #3a3a3a;
+  --color-error: #ef5350;
+  --color-shadow: rgba(0, 0, 0, 0.6);
+}
+
+html,
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}

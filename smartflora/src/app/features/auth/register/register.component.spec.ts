@@ -1,0 +1,46 @@
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { Auth } from '@angular/fire/auth';
+import { RegisterComponent } from './register.component';
+
+describe('RegisterComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [RegisterComponent],
+      providers: [
+        { provide: Auth, useValue: {} },
+        { provide: Router, useValue: { navigateByUrl: () => Promise.resolve(true) } }
+      ]
+    }).compileComponents();
+  });
+
+  it('should create the component', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should be invalid when fields are empty', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    expect(fixture.componentInstance.form.invalid).toBeTrue();
+  });
+
+  it('should be invalid when passwords do not match', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    fixture.componentInstance.form.setValue({
+      email: 'test@example.com',
+      password: 'secret123',
+      confirmPassword: 'different'
+    });
+    expect(fixture.componentInstance.form.errors?.['passwordMismatch']).toBeTrue();
+  });
+
+  it('should be valid when passwords match', () => {
+    const fixture = TestBed.createComponent(RegisterComponent);
+    fixture.componentInstance.form.setValue({
+      email: 'test@example.com',
+      password: 'secret123',
+      confirmPassword: 'secret123'
+    });
+    expect(fixture.componentInstance.form.valid).toBeTrue();
+  });
+});

@@ -1,0 +1,12 @@
+<button
+  type="button"
+  class="theme-toggle"
+  role="switch"
+  [attr.aria-checked]="themeService.theme() === 'dark'"
+  aria-label="Смяна на темата"
+  (click)="themeService.toggle()"
+>
+  <span class="track">
+    <span class="thumb">{{ themeService.theme() === 'dark' ? '🌙' : '☀️' }}</span>
+  </span>
+</button>
