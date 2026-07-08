@@ -15,12 +15,13 @@
 }
 
 .brand-icon {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 
 .brand-name {
-  font-size: 1.1rem;
+  font-size: 1.8rem;
   font-weight: 700;
+  color: var(--color-primary-contrast);
 }
 
 .actions {
