@@ -44,11 +44,14 @@ export class RegisterComponent {
 
     try {
       await createUserWithEmailAndPassword(this.auth, email, password);
-      await this.router.navigateByUrl('/plants');
-    } catch {
-      this.errorMessage.set('Регистрацията неуспешна. Опитайте с друг имейл.');
-    } finally {
+    } catch (error) {
+      console.error('[register] Firebase error:', error);
+      this.errorMessage.set(`Registration failed! Please try again.`);
       this.loading.set(false);
+      return;
     }
+
+    this.loading.set(false);
+    await this.router.navigateByUrl('/plants').catch(() => {});
   }
 }

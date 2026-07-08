@@ -1,0 +1,19 @@
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 95vh;
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.placeholder h1 {
+  color: var(--color-primary);
+}
+
+.user-email {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}

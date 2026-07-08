@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-// import { authGuard } from './guards/auth.guard'; // re-enable with the plants routes below
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -18,15 +18,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/register/register.component')
         .then(m => m.RegisterComponent)
+  },
+  {
+    path: 'plants',
+    loadComponent: () =>
+      import('./features/plants/plant-list/plant-list.component')
+        .then(m => m.PlantListComponent),
+    canActivate: [authGuard]
   }
-  // TODO: re-enable once plant-list/plant-add/plant-detail components exist
-  // {
-  //   path: 'plants',
-  //   loadComponent: () =>
-  //     import('./features/plants/plant-list/plant-list.component')
-  //       .then(m => m.PlantListComponent),
-  //   canActivate: [authGuard]
-  // },
+  // TODO: re-enable once plant-add/plant-detail components exist
   // {
   //   path: 'plants/add',
   //   loadComponent: () =>

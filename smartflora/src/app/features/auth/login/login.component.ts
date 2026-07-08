@@ -34,11 +34,13 @@ export class LoginComponent {
 
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
-      await this.router.navigateByUrl('/plants');
     } catch {
-      this.errorMessage.set('Невалиден имейл или парола.');
-    } finally {
+      this.errorMessage.set('Invalid email or password. Please try again.');
       this.loading.set(false);
+      return;
     }
+
+    this.loading.set(false);
+    await this.router.navigateByUrl('/plants').catch(() => {});
   }
 }
