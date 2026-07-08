@@ -1,0 +1,35 @@
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-icon">🌿</span>
+    <span class="brand-name">SmartFlora</span>
+  </div>
+
+  <div class="actions">
+    <button
+      type="button"
+      class="icon-button"
+      (click)="toggleInfo()"
+      [attr.aria-expanded]="showInfo()"
+      aria-label="Information"
+    >
+      <img src="/info-circle.svg" alt="" class="icon" />
+    </button>
+    <button type="button" class="icon-button" (click)="logout()" aria-label="Log out">
+      <img src="/exit.svg" alt="" class="icon" />
+    </button>
+
+    <app-theme-toggle class="theme-toggle-fixed" />
+  </div>
+
+  @if (showInfo()) {
+    <div class="info-panel">
+      <h2>Getting Started with SmartFlora</h2>
+      <ol>
+        <li>Add your plants using the "+" button.</li>
+        <li>Tap "Details" to see the statistics for your plant.</li>
+        <li>Use "Add Data" to log care.</li>
+      </ol>
+      <button type="button" class="close-info" (click)="toggleInfo()">Close</button>
+    </div>
+  }
+</header>

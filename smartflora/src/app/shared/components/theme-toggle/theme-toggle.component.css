@@ -17,7 +17,7 @@
 }
 
 .theme-toggle[aria-checked='true'] .track {
-  background-color: var(--color-primary);
+  background-color: var(--color-border);
   justify-content: flex-end;
 }
 

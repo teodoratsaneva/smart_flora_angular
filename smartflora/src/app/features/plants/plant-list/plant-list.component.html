@@ -1,7 +1,36 @@
-<div class="placeholder">
-  <h1>Растения</h1>
-  <p>Тук ще бъде списъкът с растения.</p>
-  @if (user()?.email) {
-    <p class="user-email">Влязохте като {{ user()?.email }}</p>
+<app-header />
+
+<div class="plants-page">
+  <header class="plants-header">
+    <h1>My Plants</h1>
+    @if (user()?.email) {
+      <p class="user-email">{{ user()?.email }}</p>
+    }
+  </header>
+
+  @if (plants().length === 0) {
+    <div class="empty-state">
+      <p>You haven't added any plants yet.</p>
+    </div>
+  } @else {
+    <div class="plant-grid">
+      @for (plant of plants(); track plant.id) {
+        <article class="plant-card">
+          @if (plant.imgUrl) {
+            <img [src]="plant.imgUrl" [alt]="plant.name" class="plant-photo" />
+          } @else {
+            <div class="plant-photo placeholder">🌱</div>
+          }
+          <h2>{{ plant.name }}</h2>
+          <p class="variety">{{ plant.variety }}</p>
+          <div class="card-actions">
+            <button type="button" class="secondary" disabled title="Coming soon">Details</button>
+            <button type="button" class="secondary" disabled title="Coming soon">Add Data</button>
+          </div>
+        </article>
+      }
+    </div>
   }
+
+  <button type="button" class="add-plant-fab" disabled title="Coming soon" aria-label="Add Plant">+ Add Plant</button>
 </div>
