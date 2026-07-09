@@ -21,7 +21,7 @@ describe('RegisterComponent', () => {
 
   it('should be invalid when fields are empty', () => {
     const fixture = TestBed.createComponent(RegisterComponent);
-    expect(fixture.componentInstance.form.invalid).toBeTrue();
+    expect(fixture.componentInstance.form.invalid).toBe(true);
   });
 
   it('should be invalid when passwords do not match', () => {
@@ -31,7 +31,7 @@ describe('RegisterComponent', () => {
       password: 'secret123',
       confirmPassword: 'different'
     });
-    expect(fixture.componentInstance.form.errors?.['passwordMismatch']).toBeTrue();
+    expect(fixture.componentInstance.form.errors?.['passwordMismatch']).toBe(true);
   });
 
   it('should be valid when passwords match', () => {
@@ -41,6 +41,6 @@ describe('RegisterComponent', () => {
       password: 'secret123',
       confirmPassword: 'secret123'
     });
-    expect(fixture.componentInstance.form.valid).toBeTrue();
+    expect(fixture.componentInstance.form.valid).toBe(true);
   });
 });

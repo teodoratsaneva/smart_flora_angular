@@ -25,15 +25,15 @@ export const routes: Routes = [
       import('./features/plants/plant-list/plant-list.component')
         .then(m => m.PlantListComponent),
     canActivate: [authGuard]
+  },
+  {
+    path: 'plants/add',
+    loadComponent: () =>
+      import('./features/plants/plant-add/plant-add.component')
+        .then(m => m.PlantAddComponent),
+    canActivate: [authGuard]
   }
-  // TODO: re-enable once plant-add/plant-detail components exist
-  // {
-  //   path: 'plants/add',
-  //   loadComponent: () =>
-  //     import('./features/plants/plant-add/plant-add.component')
-  //       .then(m => m.PlantAddComponent),
-  //   canActivate: [authGuard]
-  // },
+  // TODO: re-enable once plant-detail component exists
   // {
   //   path: 'plants/:id',
   //   loadComponent: () =>

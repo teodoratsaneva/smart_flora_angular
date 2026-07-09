@@ -21,18 +21,18 @@ describe('LoginComponent', () => {
 
   it('should be invalid when fields are empty', () => {
     const fixture = TestBed.createComponent(LoginComponent);
-    expect(fixture.componentInstance.form.invalid).toBeTrue();
+    expect(fixture.componentInstance.form.invalid).toBe(true);
   });
 
   it('should be valid with a well-formed email and password', () => {
     const fixture = TestBed.createComponent(LoginComponent);
     fixture.componentInstance.form.setValue({ email: 'test@example.com', password: 'secret123' });
-    expect(fixture.componentInstance.form.valid).toBeTrue();
+    expect(fixture.componentInstance.form.valid).toBe(true);
   });
 
   it('should not submit when the form is invalid', async () => {
     const fixture = TestBed.createComponent(LoginComponent);
     await fixture.componentInstance.onSubmit();
-    expect(fixture.componentInstance.form.touched).toBeTrue();
+    expect(fixture.componentInstance.form.touched).toBe(true);
   });
 });

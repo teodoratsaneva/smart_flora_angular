@@ -1,0 +1,59 @@
+<app-header />
+
+<div class="add-plant-page">
+  <form class="add-plant-card" (ngSubmit)="onSubmit()">
+    <h1>Add New Plant</h1>
+
+    <label for="plantSearch">Search Plant</label>
+    <input
+      id="plantSearch"
+      type="text"
+      [formControl]="searchControl"
+      placeholder="e.g. Ficus, Orchid..."
+      autocomplete="off"
+    />
+
+    @if (searchResults().length > 0) {
+      <ul class="search-results">
+        @for (species of searchResults(); track species.id) {
+          <li>
+            <button type="button" class="result-item" (click)="selectSpecies(species)">
+              @if (species.imageUrl) {
+                <img [src]="species.imageUrl" [alt]="species.commonName" class="result-thumb" />
+              } @else {
+                <div class="result-thumb placeholder">🌱</div>
+              }
+              <span>
+                <strong>{{ species.commonName }}</strong>
+                @if (species.scientificName) {
+                  <em>{{ species.scientificName }}</em>
+                }
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (selectedSpecies(); as species) {
+      <p class="selected-species">Selected: <strong>{{ species.commonName }}</strong></p>
+    }
+
+    <label for="photo">Add Plant Photo</label>
+    <input id="photo" type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+
+    @if (photoPreviewUrl()) {
+      <img [src]="photoPreviewUrl()" alt="Selected plant" class="photo-preview" />
+    }
+
+    @if (errorMessage()) {
+      <p class="form-error">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="saving() || !isFormValid()">
+      {{ saving() ? 'Saving...' : 'Add Plant' }}
+    </button>
+
+    <a routerLink="/plants" class="cancel-link">Cancel</a>
+  </form>
+</div>

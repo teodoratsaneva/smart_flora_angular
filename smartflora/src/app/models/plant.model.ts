@@ -4,7 +4,7 @@ export interface Plant {
     variety: string;
     idealTemperature: number;
     idealHumidity: number;
-    imgUrl: string;
+    // imgUrl: string;
     createdAt: Date;
 }
 

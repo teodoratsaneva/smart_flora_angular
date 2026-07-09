@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Auth, authState } from '@angular/fire/auth';
+import { RouterLink } from '@angular/router';
 import { of, switchMap } from 'rxjs';
 import { PlantService } from '../../../services/plant.service';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 
 @Component({
   selector: 'app-plant-list',
-  imports: [HeaderComponent],
+  imports: [HeaderComponent, RouterLink],
   templateUrl: './plant-list.component.html',
   styleUrl: './plant-list.component.css'
 })

@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { Storage } from '@angular/fire/storage';
-import { PlantListComponent } from './plant-list.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { PlantAddComponent } from './plant-add.component';
 
-describe('PlantListComponent', () => {
+describe('PlantAddComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PlantListComponent],
+      imports: [PlantAddComponent, HttpClientTestingModule],
       providers: [
         {
           provide: Auth,
@@ -27,12 +28,23 @@ describe('PlantListComponent', () => {
   });
 
   it('should create the component', () => {
-    const fixture = TestBed.createComponent(PlantListComponent);
+    const fixture = TestBed.createComponent(PlantAddComponent);
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should default to an empty plant list when logged out', () => {
-    const fixture = TestBed.createComponent(PlantListComponent);
-    expect(fixture.componentInstance['plants']()).toEqual([]);
+  it('should be invalid until a species is selected', () => {
+    const fixture = TestBed.createComponent(PlantAddComponent);
+    expect(fixture.componentInstance.isFormValid()).toBe(false);
+  });
+
+  it('should become valid once a species is selected', () => {
+    const fixture = TestBed.createComponent(PlantAddComponent);
+    fixture.componentInstance.selectSpecies({
+      id: 1,
+      commonName: 'Ficus',
+      scientificName: 'Ficus benjamina',
+      imageUrl: 'https://example.com/ficus.jpg'
+    });
+    expect(fixture.componentInstance.isFormValid()).toBe(true);
   });
 });

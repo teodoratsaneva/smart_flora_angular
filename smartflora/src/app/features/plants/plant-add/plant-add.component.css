@@ -1,0 +1,149 @@
+.add-plant-page {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem 4rem;
+  min-height: 90vh;
+  color: var(--color-text);
+}
+
+.add-plant-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 380px;
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 16px var(--color-shadow);
+  height: fit-content;
+}
+
+.add-plant-card h1 {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--color-primary);
+}
+
+.add-plant-card label {
+  margin-bottom: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.add-plant-card input[type='text'],
+.add-plant-card input[type='file'] {
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.search-results {
+  list-style: none;
+  margin: -0.5rem 0 1rem;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.search-results li:last-child .result-item {
+  border-bottom: none;
+}
+
+.result-item:hover {
+  background-color: var(--color-bg);
+}
+
+.result-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.result-thumb.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  font-size: 1rem;
+}
+
+.result-item span {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.result-item em {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.selected-species {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.photo-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.form-error {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--color-error);
+  text-align: center;
+}
+
+.add-plant-card button[type='submit'] {
+  padding: 0.7rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-plant-card button[type='submit']:disabled {
+  background-color: var(--color-primary-disabled);
+  cursor: not-allowed;
+}
+
+.cancel-link {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}

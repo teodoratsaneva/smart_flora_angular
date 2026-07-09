@@ -1,0 +1,107 @@
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { Auth, authState } from '@angular/fire/auth';
+import { debounceTime, distinctUntilChanged, firstValueFrom, of, switchMap } from 'rxjs';
+import { PlantService } from '../../../services/plant.service';
+import { PerenualService, PerenualSpecies } from '../../../services/perenual.service';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
+
+const DEFAULT_IDEAL_TEMPERATURE = 21;
+const DEFAULT_IDEAL_HUMIDITY = 50;
+
+@Component({
+  selector: 'app-plant-add',
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, HeaderComponent],
+  templateUrl: './plant-add.component.html',
+  styleUrl: './plant-add.component.css'
+})
+export class PlantAddComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
+  private readonly plantService = inject(PlantService);
+  private readonly perenualService = inject(PerenualService);
+
+  protected readonly searchControl = this.fb.nonNullable.control('');
+
+  protected readonly searchResults = toSignal(
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => (this.selectedSpecies()?.commonName === query ? of([]) : this.perenualService.searchSpecies(query)))
+    ),
+    { initialValue: [] }
+  );
+
+  protected readonly selectedSpecies = signal<PerenualSpecies | null>(null);
+  protected readonly selectedPhoto = signal<File | null>(null);
+  protected readonly photoPreviewUrl = signal<string | null>(null);
+  protected readonly saving = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
+
+  selectSpecies(species: PerenualSpecies): void {
+    this.selectedSpecies.set(species);
+    this.searchControl.setValue(species.commonName, { emitEvent: false });
+    if (!this.selectedPhoto()) {
+      this.photoPreviewUrl.set(species.imageUrl || null);
+    }
+  }
+
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.selectedPhoto.set(file);
+
+    if (!file) {
+      this.photoPreviewUrl.set(this.selectedSpecies()?.imageUrl || null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => this.photoPreviewUrl.set(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  isFormValid(): boolean {
+    return this.selectedSpecies() !== null;
+  }
+
+  async onSubmit(): Promise<void> {
+    const species = this.selectedSpecies();
+    if (!species) {
+      return;
+    }
+
+    const user = await firstValueFrom(authState(this.auth));
+    if (!user) {
+      return;
+    }
+
+    this.saving.set(true);
+    this.errorMessage.set(null);
+
+    try {
+      const photo = this.selectedPhoto();
+      // const imgUrl = photo ? await this.plantService.uploadPlantPhoto(user.uid, photo) : species.imageUrl;
+
+      await this.plantService.addPlant(user.uid, {
+        name: species.commonName,
+        variety: species.scientificName || 'Standard',
+        idealTemperature: DEFAULT_IDEAL_TEMPERATURE,
+        idealHumidity: DEFAULT_IDEAL_HUMIDITY,
+        // imgUrl,
+        createdAt: new Date()
+      });
+    } catch (error) {
+      console.error('[plant-add] Failed to save plant:', error);
+      this.errorMessage.set('Failed to save the plant. Please try again.');
+      this.saving.set(false);
+      return;
+    }
+
+    this.saving.set(false);
+    await this.router.navigateByUrl('/plants').catch(() => {});
+  }
+}
