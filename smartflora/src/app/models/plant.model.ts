@@ -2,9 +2,13 @@ export interface Plant {
     id: string;
     name: string;
     variety: string;
-    idealTemperature: number;
-    idealHumidity: number;
-    // imgUrl: string;
+    requirements?: {
+        watering?: string;
+        sunlight?: string;
+        careLevel?: string;
+        maintenance?: string;
+    };
+    imgUrl?: string;
     createdAt: Date;
 }
 

@@ -8,9 +8,6 @@ import { PlantService } from '../../../services/plant.service';
 import { PerenualService, PerenualSpecies } from '../../../services/perenual.service';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 
-const DEFAULT_IDEAL_TEMPERATURE = 21;
-const DEFAULT_IDEAL_HUMIDITY = 50;
-
 @Component({
   selector: 'app-plant-add',
   imports: [FormsModule, ReactiveFormsModule, RouterLink, HeaderComponent],
@@ -47,6 +44,14 @@ export class PlantAddComponent {
     if (!this.selectedPhoto()) {
       this.photoPreviewUrl.set(species.imageUrl || null);
     }
+
+    this.perenualService.getSpeciesById(species.id).subscribe(details => {
+      if (details && this.selectedSpecies()?.id === species.id) {
+        this.selectedSpecies.set({ ...species, ...details });
+      }
+    });
+
+    console.log(this.selectedSpecies());
   }
 
   onPhotoSelected(event: Event): void {
@@ -84,14 +89,18 @@ export class PlantAddComponent {
 
     try {
       const photo = this.selectedPhoto();
-      // const imgUrl = photo ? await this.plantService.uploadPlantPhoto(user.uid, photo) : species.imageUrl;
+      const imgUrl = photo ? await this.plantService.uploadPlantPhoto(user.uid, photo) : species.imageUrl;
 
       await this.plantService.addPlant(user.uid, {
         name: species.commonName,
         variety: species.scientificName || 'Standard',
-        idealTemperature: DEFAULT_IDEAL_TEMPERATURE,
-        idealHumidity: DEFAULT_IDEAL_HUMIDITY,
-        // imgUrl,
+        imgUrl,
+        requirements: {
+          watering: species.requirements?.watering,
+          sunlight: species.requirements?.sunlight?.join(', '),
+          careLevel: species.requirements?.careLevel,
+          maintenance: species.requirements?.maintenance
+        },
         createdAt: new Date()
       });
     } catch (error) {
