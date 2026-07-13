@@ -57,12 +57,7 @@ export class AddDataPlantComponent {
             this.showToast('Data saved successfully!');
             this.closeAddData();
         } catch (error) {
-            if (error instanceof Error && error.message === 'ALREADY_ENTERED_TODAY') {
-                this.showToast('You already entered data for this plant today.');
-
-            } else {
-                this.errorMessage.set('Failed to save data. Please try again.');
-            }
+            this.errorMessage.set('Failed to save data. Please try again.');
         } finally {
             this.saving.set(false);
         }

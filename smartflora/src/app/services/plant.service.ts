@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import {
   CollectionReference,
   DocumentReference,
@@ -44,15 +44,6 @@ export class PlantService {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    const alreadyEnteredToday = history.some(entry => {
-      const entryDate = entry.date instanceof Timestamp ? entry.date.toDate() : new Date(entry.date);
-      return entryDate >= today;
-    });
-
-    if (alreadyEnteredToday) {
-      throw new Error('ALREADY_ENTERED_TODAY');
-    }
 
     await updateDoc(plantRef, {
       history: arrayUnion({
