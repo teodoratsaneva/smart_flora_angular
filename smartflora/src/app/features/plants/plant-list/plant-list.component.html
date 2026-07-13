@@ -25,7 +25,13 @@
           <p class="variety">{{ plant.variety }}</p>
           <div class="card-actions">
             <button type="button" class="secondary" disabled title="Coming soon">Details</button>
-            <button type="button" class="secondary" disabled title="Coming soon">Add Data</button>
+            <button
+              type="button"
+              class="secondary"
+              [disabled]="isDataEnteredToday(plant)"
+              [title]="tooltipMessage(plant)"
+              (click)="openAddData(plant)"
+            >Add Data</button>
           </div>
         </article>
       }
@@ -34,3 +40,5 @@
 
   <a routerLink="/plants/add" class="add-plant-fab" aria-label="Add Plant">+ Add Plant</a>
 </div>
+
+<app-add-data-plant [plant]="activePlant()" [user]="user()" (closed)="closeAddData()" />

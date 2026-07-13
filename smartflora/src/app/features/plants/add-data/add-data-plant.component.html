@@ -1,0 +1,53 @@
+@if (plant(); as plant) {
+  <div class="modal-backdrop" (click)="closeAddData()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h2>{{ plant.name }}</h2>
+
+      <label for="temperature">Temperature ({{ temperature() }}°C)</label>
+      <input
+        id="temperature"
+        type="range"
+        min="0"
+        max="40"
+        step="0.5"
+        [value]="temperature()"
+        (input)="temperature.set($any($event.target).valueAsNumber)"
+      />
+
+      <label for="soilMoisture">Soil Moisture ({{ soilMoisture() }}%)</label>
+      <input
+        id="soilMoisture"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        [value]="soilMoisture()"
+        (input)="soilMoisture.set($any($event.target).valueAsNumber)"
+      />
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="watered()"
+          (change)="watered.set($any($event.target).checked)"
+        />
+        Watered Today
+      </label>
+
+      @if (errorMessage()) {
+        <p class="form-error">{{ errorMessage() }}</p>
+      }
+
+      <div class="modal-actions">
+        <button type="button" class="secondary" (click)="closeAddData()">Cancel</button>
+        <button type="button" (click)="saveEntry()" [disabled]="saving()">
+          {{ saving() ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (toastMessage(); as message) {
+  <div class="toast">{{ message }}</div>
+}

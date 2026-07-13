@@ -10,11 +10,10 @@ export interface Plant {
     };
     imgUrl?: string;
     createdAt: Date;
+    history?: HistoryEntry[];
 }
 
-export interface PlantEntry {
-    id?: string;
-    plantId: string;
+export interface HistoryEntry {
     date: Date;
     temperature: number;
     soilMoisture: number;
