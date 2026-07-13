@@ -1,0 +1,57 @@
+<app-header />
+
+<div class="plant-details-page">
+  @if (plant(); as plant) {
+    <a routerLink="/plants" class="back-link">&larr; Back to My Plants</a>
+
+    <header class="plant-header">
+      @if (plant.imgUrl) {
+        <img [src]="plant.imgUrl" [alt]="plant.name" class="plant-photo" />
+      } @else {
+        <div class="plant-photo placeholder">🌱</div>
+      }
+      <h1>{{ plant.name }}</h1>
+      <p class="variety">{{ plant.variety }}</p>
+    </header>
+
+    @if (plant.requirements; as req) {
+      <section class="card">
+        <h2>Ideal Conditions</h2>
+        <dl class="requirements">
+          @if (req.watering) {
+            <div><dt>Watering</dt><dd>{{ req.watering }}</dd></div>
+          }
+          @if (req.sunlight) {
+            <div><dt>Sunlight</dt><dd>{{ req.sunlight }}</dd></div>
+          }
+          @if (req.careLevel) {
+            <div><dt>Care Level</dt><dd>{{ req.careLevel }}</dd></div>
+          }
+          @if (req.maintenance) {
+            <div><dt>Maintenance</dt><dd>{{ req.maintenance }}</dd></div>
+          }
+        </dl>
+      </section>
+    }
+
+    <section class="card">
+      <h2>History</h2>
+      @if (sortedHistory().length === 0) {
+        <p class="empty-state">No data entered yet. Use "Add Data" to log care.</p>
+      } @else {
+        <ul class="history-list">
+          @for (entry of sortedHistory(); track entry.date) {
+            <li class="history-entry">
+              <span class="history-date">{{ historyDate(entry) | date: 'medium' }}</span>
+              <span class="history-value">🌡️ {{ entry.temperature }}°C</span>
+              <span class="history-value">💧 {{ entry.soilMoisture }}%</span>
+              <span class="history-value">{{ entry.watered ? '✅ Watered' : '—' }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  } @else {
+    <p class="empty-state">Loading plant details...</p>
+  }
+</div>

@@ -24,7 +24,7 @@
           <h2>{{ plant.name }}</h2>
           <p class="variety">{{ plant.variety }}</p>
           <div class="card-actions">
-            <button type="button" class="secondary" disabled title="Coming soon">Details</button>
+            <a [routerLink]="['/plants', plant.id]" class="secondary">Details</a>
             <button
               type="button"
               class="secondary"

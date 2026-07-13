@@ -32,13 +32,12 @@ export const routes: Routes = [
       import('./features/plants/plant-add/plant-add.component')
         .then(m => m.PlantAddComponent),
     canActivate: [authGuard]
+  },
+  {
+    path: 'plants/:id',
+    loadComponent: () =>
+      import('./features/plants/plant-details/plant-details.component')
+        .then(m => m.PlantDetailsComponent),
+    canActivate: [authGuard]
   }
-  // TODO: re-enable once plant-detail component exists
-  // {
-  //   path: 'plants/:id',
-  //   loadComponent: () =>
-  //     import('./features/plants/plant-details/plant-details.component')
-  //       .then(m => m.PlantDetailsComponent),
-  //   canActivate: [authGuard]
-  // }
 ];

@@ -9,6 +9,7 @@ import {
   collection,
   collectionData,
   doc,
+  docData,
   getDoc,
   updateDoc
 } from '@angular/fire/firestore';
@@ -27,6 +28,10 @@ export class PlantService {
 
   addPlant(userId: string, plant: Omit<Plant, 'id'>): Promise<void> {
     return addDoc(this.plantsCollection(userId), plant).then(() => undefined);
+  }
+
+  getPlant(userId: string, plantId: string): Observable<Plant | undefined> {
+    return docData(this.plantDoc(userId, plantId), { idField: 'id' });
   }
 
   async uploadPlantPhoto(userId: string, file: File): Promise<string> {
