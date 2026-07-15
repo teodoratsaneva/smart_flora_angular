@@ -35,6 +35,10 @@
     }
 
     <section class="card">
+      <app-trend-chart [history]="plant.history ?? []" />
+    </section>
+
+    <section class="card">
       <h2>History</h2>
       @if (sortedHistory().length === 0) {
         <p class="empty-state">No data entered yet. Use "Add Data" to log care.</p>

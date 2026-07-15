@@ -1,0 +1,36 @@
+<h2>Temperature and Soil Moisture Trend</h2>
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot temp-dot"></span>Temperature (&deg;C)</span>
+  <span class="legend-item"><span class="legend-dot moisture-dot"></span>Soil Moisture (%)</span>
+</div>
+
+@let data = chart();
+<svg class="trend-chart" [attr.viewBox]="'0 0 ' + CHART_WIDTH + ' ' + CHART_HEIGHT" preserveAspectRatio="xMidYMid meet">
+  @for (line of data.gridLines; track line.y) {
+    <line class="grid-line" [attr.x1]="PADDING_LEFT" [attr.x2]="CHART_WIDTH - PADDING_RIGHT" [attr.y1]="line.y" [attr.y2]="line.y" />
+    <text class="axis-label temp-axis" [attr.x]="PADDING_LEFT - 6" [attr.y]="line.y + 3">{{ line.tempLabel }}&deg;C</text>
+    <text class="axis-label moisture-axis" [attr.x]="CHART_WIDTH - PADDING_RIGHT + 6" [attr.y]="line.y + 3">{{ line.moistureLabel }}%</text>
+  }
+
+  @for (day of data.days; track $index) {
+    <text class="axis-label day-label" [attr.x]="day.x" [attr.y]="CHART_HEIGHT - 8">{{ day.label }}</text>
+  }
+
+  @for (segment of data.tempSegments; track $index) {
+    <polyline class="trend-line temp-line" [attr.points]="segment" />
+  }
+  @for (segment of data.moistureSegments; track $index) {
+    <polyline class="trend-line moisture-line" [attr.points]="segment" />
+  }
+
+  @for (point of data.tempPoints; track $index) {
+    <circle class="trend-point temp-dot" [attr.cx]="point.x" [attr.cy]="point.y" r="3" />
+  }
+  @for (point of data.moisturePoints; track $index) {
+    <circle class="trend-point moisture-dot" [attr.cx]="point.x" [attr.cy]="point.y" r="3" />
+  }
+</svg>
+
+@if (!data.hasData) {
+  <p class="empty-state">No data logged in the last 7 days yet.</p>
+}

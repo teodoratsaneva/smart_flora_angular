@@ -1,0 +1,86 @@
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.temp-dot {
+  background-color: #4caf82;
+  fill: #4caf82;
+}
+
+.moisture-dot {
+  background-color: #2f9bd6;
+  fill: #2f9bd6;
+}
+
+.trend-chart {
+  width: 100%;
+  height: auto;
+}
+
+.grid-line {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.axis-label {
+  font-size: 7px;
+  fill: var(--color-text-muted);
+}
+
+.temp-axis {
+  text-anchor: end;
+}
+
+.moisture-axis {
+  text-anchor: start;
+}
+
+.day-label {
+  text-anchor: middle;
+}
+
+.trend-line {
+  fill: none;
+  stroke-width: 2;
+}
+
+.temp-line {
+  stroke: #4caf82;
+}
+
+.moisture-line {
+  stroke: #2f9bd6;
+}
+
+.trend-point {
+  stroke: none;
+}
+
+.empty-state {
+  margin: 0.5rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
