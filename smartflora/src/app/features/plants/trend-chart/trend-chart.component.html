@@ -4,6 +4,27 @@
   <span class="legend-item"><span class="legend-dot moisture-dot"></span>Soil Moisture (%)</span>
 </div>
 
+<div class="view-toggle" role="group" aria-label="Chart period">
+  <button
+    type="button"
+    class="view-toggle-btn"
+    [class.active]="viewMode() === 'week'"
+    [attr.aria-pressed]="viewMode() === 'week'"
+    (click)="setViewMode('week')"
+  >
+    Week
+  </button>
+  <button
+    type="button"
+    class="view-toggle-btn"
+    [class.active]="viewMode() === 'month'"
+    [attr.aria-pressed]="viewMode() === 'month'"
+    (click)="setViewMode('month')"
+  >
+    Month
+  </button>
+</div>
+
 @let data = chart();
 <svg class="trend-chart" [attr.viewBox]="'0 0 ' + CHART_WIDTH + ' ' + CHART_HEIGHT" preserveAspectRatio="xMidYMid meet">
   @for (line of data.gridLines; track line.y) {
@@ -32,5 +53,11 @@
 </svg>
 
 @if (!data.hasData) {
-  <p class="empty-state">No data logged in the last 7 days yet.</p>
+  <p class="empty-state">
+    @if (viewMode() === 'week') {
+      No data logged in the last 7 days yet.
+    } @else {
+      No data logged in the last 30 days yet.
+    }
+  </p>
 }

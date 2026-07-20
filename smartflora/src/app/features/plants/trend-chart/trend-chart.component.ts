@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { HistoryEntry } from '../../../models/plant.model';
 import { historyDate } from '../../../shared/utils/history-date.util';
 
@@ -6,6 +6,8 @@ interface ChartPoint {
   x: number;
   y: number;
 }
+
+type ViewMode = 'week' | 'month';
 
 const CHART_WIDTH = 320;
 const CHART_HEIGHT = 190;
@@ -15,7 +17,11 @@ const PADDING_TOP = 14;
 const PADDING_BOTTOM = 30;
 const PLOT_WIDTH = CHART_WIDTH - PADDING_LEFT - PADDING_RIGHT;
 const PLOT_HEIGHT = CHART_HEIGHT - PADDING_TOP - PADDING_BOTTOM;
-const DAYS_SHOWN = 7;
+
+const VIEW_CONFIG: Record<ViewMode, { periodLengthDays: number; periodCount: number }> = {
+  week: { periodLengthDays: 1, periodCount: 7 },
+  month: { periodLengthDays: 5, periodCount: 6 }
+};
 
 @Component({
   selector: 'app-trend-chart',
@@ -25,10 +31,16 @@ const DAYS_SHOWN = 7;
 export class TrendChartComponent {
   readonly history = input<HistoryEntry[]>([]);
 
+  protected readonly viewMode = signal<ViewMode>('week');
+
   protected readonly CHART_WIDTH = CHART_WIDTH;
   protected readonly CHART_HEIGHT = CHART_HEIGHT;
   protected readonly PADDING_LEFT = PADDING_LEFT;
   protected readonly PADDING_RIGHT = PADDING_RIGHT;
+
+  protected setViewMode(mode: ViewMode): void {
+    this.viewMode.set(mode);
+  }
 
   protected readonly chart = computed(() => {
     const entryByDay = new Map<string, HistoryEntry>();
@@ -39,21 +51,38 @@ export class TrendChartComponent {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const { periodLengthDays, periodCount } = VIEW_CONFIG[this.viewMode()];
+
     const labels: string[] = [];
     const temperatures: (number | null)[] = [];
     const moistures: (number | null)[] = [];
 
-    for (let i = DAYS_SHOWN - 1; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      const entry = entryByDay.get(this.dayKey(date));
+    for (let p = periodCount - 1; p >= 0; p--) {
+      const periodEnd = new Date(today);
+      periodEnd.setDate(periodEnd.getDate() - p * periodLengthDays);
+      const periodStart = new Date(periodEnd);
+      periodStart.setDate(periodStart.getDate() - (periodLengthDays - 1));
 
-      labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
-      temperatures.push(entry ? entry.temperature : null);
-      moistures.push(entry ? entry.soilMoisture : null);
+      const tempValues: number[] = [];
+      const moistureValues: number[] = [];
+
+      for (let d = 0; d < periodLengthDays; d++) {
+        const date = new Date(periodStart);
+        date.setDate(date.getDate() + d);
+        const entry = entryByDay.get(this.dayKey(date));
+
+        if (entry) {
+          tempValues.push(entry.temperature);
+          moistureValues.push(entry.soilMoisture);
+        }
+      }
+
+      labels.push(this.periodLabel(periodStart, periodEnd, periodLengthDays));
+      temperatures.push(this.average(tempValues));
+      moistures.push(this.average(moistureValues));
     }
 
-    const xs = labels.map((_, i) => PADDING_LEFT + i * (PLOT_WIDTH / (DAYS_SHOWN - 1)));
+    const xs = labels.map((_, i) => PADDING_LEFT + i * (PLOT_WIDTH / (periodCount - 1)));
 
     return {
       days: labels.map((label, i) => ({ label, x: xs[i] })),
@@ -69,6 +98,22 @@ export class TrendChartComponent {
       moisturePoints: this.buildPoints(xs, moistures, 100)
     };
   });
+
+  private periodLabel(start: Date, end: Date, periodLengthDays: number): string {
+    if (periodLengthDays === 1) {
+      return start.toLocaleDateString('en-US', { weekday: 'short' });
+    }
+
+    return `${start.getDate()}-${end.getDate()}`;
+  }
+
+  private average(values: number[]): number | null {
+    if (values.length === 0) {
+      return null;
+    }
+
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+  }
 
   private dayKey(date: Date): string {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;

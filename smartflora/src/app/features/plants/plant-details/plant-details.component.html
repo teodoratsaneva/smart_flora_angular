@@ -49,7 +49,7 @@
               <span class="history-date">{{ historyDate(entry) | date: 'medium' }}</span>
               <span class="history-value">🌡️ {{ entry.temperature }}°C</span>
               <span class="history-value">💧 {{ entry.soilMoisture }}%</span>
-              <span class="history-value">{{ entry.watered ? '✅ Watered' : '—' }}</span>
+              <span class="history-value">{{ entry.watered ? '✅ Watered' : '' }}</span>
             </li>
           }
         </ul>
