@@ -8,10 +8,11 @@ import { Plant } from '../../../models/plant.model';
 import { PlantService } from '../../../services/plant.service';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { AddDataPlantComponent } from '../add-data/add-data-plant.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-plant-list',
-  imports: [HeaderComponent, RouterLink, AddDataPlantComponent],
+  imports: [HeaderComponent, RouterLink, AddDataPlantComponent, MatTooltip],
   templateUrl: './plant-list.component.html',
   styleUrl: './plant-list.component.css'
 })

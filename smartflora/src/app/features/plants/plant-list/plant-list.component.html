@@ -29,15 +29,14 @@
               type="button"
               class="secondary"
               [disabled]="isDataEnteredToday(plant)"
-              [title]="tooltipMessage(plant)"
               (click)="openAddData(plant)"
+              matTooltip="{{ tooltipMessage(plant) }}"
             >Add Data</button>
           </div>
         </article>
       }
     </div>
   }
-
   <a routerLink="/plants/add" class="add-plant-fab" aria-label="Add Plant">+ Add Plant</a>
 </div>
 
