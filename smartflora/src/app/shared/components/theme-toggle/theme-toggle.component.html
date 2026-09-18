@@ -1,12 +1,8 @@
-<button
-  type="button"
+<mat-slide-toggle
   class="theme-toggle"
-  role="switch"
-  [attr.aria-checked]="themeService.theme() === 'dark'"
+  [checked]="themeService.theme() === 'dark'"
+  (change)="themeService.toggle()"
   aria-label="Смяна на темата"
-  (click)="themeService.toggle()"
 >
-  <span class="track">
-    <span class="thumb">{{ themeService.theme() === 'dark' ? '🌙' : '☀️' }}</span>
-  </span>
-</button>
+  {{ themeService.theme() === 'dark' ? '🌙 Dark' : '☀️ Light' }}
+</mat-slide-toggle>

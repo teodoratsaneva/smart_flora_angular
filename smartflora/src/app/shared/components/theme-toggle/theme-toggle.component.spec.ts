@@ -20,7 +20,7 @@ describe('ThemeToggleComponent', () => {
     const themeService = fixture.componentInstance['themeService'];
     const initial = themeService.theme();
 
-    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.theme-toggle');
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.theme-toggle button');
     button.click();
 
     expect(themeService.theme()).not.toBe(initial);

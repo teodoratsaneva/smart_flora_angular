@@ -55,6 +55,16 @@
         </ul>
       }
     </section>
+
+    <section class="card">
+      <h2>Care Advice</h2>
+      @if (careAdvice(); as advice) {
+        <p class="advice-score">Score: {{ advice.score }} ({{ advice.status }})</p>
+        <p class="advice-text">{{ advice.advice }}</p>
+      } @else {
+        <p class="empty-state">Loading care advice...</p>
+      }
+    </section>
   } @else {
     <p class="empty-state">Loading plant details...</p>
   }

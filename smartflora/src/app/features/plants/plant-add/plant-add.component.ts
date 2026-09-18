@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Auth, authState } from '@angular/fire/auth';
 import { debounceTime, distinctUntilChanged, firstValueFrom, of, switchMap } from 'rxjs';
 import { PlantService } from '../../../services/plant.service';
-import { PerenualService, PerenualSpecies } from '../../../services/perenual.service';
+import { PlantSpeciesService, PlantSpeciesOption } from '../../../services/plant-species.service';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 
 @Component({
@@ -19,7 +19,7 @@ export class PlantAddComponent {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly plantService = inject(PlantService);
-  private readonly perenualService = inject(PerenualService);
+  private readonly plantSpeciesService = inject(PlantSpeciesService);
 
   protected readonly searchControl = this.fb.nonNullable.control('');
 
@@ -27,25 +27,25 @@ export class PlantAddComponent {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(query => (this.selectedSpecies()?.commonName === query ? of([]) : this.perenualService.searchSpecies(query)))
+      switchMap(query => (this.selectedSpecies()?.commonName === query ? of([]) : this.plantSpeciesService.searchSpecies(query)))
     ),
     { initialValue: [] }
   );
 
-  protected readonly selectedSpecies = signal<PerenualSpecies | null>(null);
+  protected readonly selectedSpecies = signal<PlantSpeciesOption | null>(null);
   protected readonly selectedPhoto = signal<File | null>(null);
   protected readonly photoPreviewUrl = signal<string | null>(null);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
-  selectSpecies(species: PerenualSpecies): void {
+  selectSpecies(species: PlantSpeciesOption): void {
     this.selectedSpecies.set(species);
     this.searchControl.setValue(species.commonName, { emitEvent: false });
     if (!this.selectedPhoto()) {
       this.photoPreviewUrl.set(species.imageUrl || null);
     }
 
-    this.perenualService.getSpeciesById(species.id).subscribe(details => {
+    this.plantSpeciesService.getSpeciesById(species.id).subscribe(details => {
       if (details && this.selectedSpecies()?.id === species.id) {
         this.selectedSpecies.set({ ...species, ...details });
       }
