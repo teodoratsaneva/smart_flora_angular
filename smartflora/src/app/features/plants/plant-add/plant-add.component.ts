@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth, authState } from '@angular/fire/auth';
@@ -23,14 +23,7 @@ export class PlantAddComponent {
 
   protected readonly searchControl = this.fb.nonNullable.control('');
 
-  protected readonly searchResults = toSignal(
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(query => (this.selectedSpecies()?.commonName === query ? of([]) : this.plantSpeciesService.searchSpecies(query)))
-    ),
-    { initialValue: [] }
-  );
+  protected readonly searchResults = signal<PlantSpeciesOption[]>([]);
 
   protected readonly selectedSpecies = signal<PlantSpeciesOption | null>(null);
   protected readonly selectedPhoto = signal<File | null>(null);
@@ -38,8 +31,20 @@ export class PlantAddComponent {
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
+  constructor() {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(query => (this.selectedSpecies()?.commonName === query ? of([]) : this.plantSpeciesService.searchSpecies(query))),
+        takeUntilDestroyed()
+      )
+      .subscribe(results => this.searchResults.set(results));
+  }
+
   selectSpecies(species: PlantSpeciesOption): void {
     this.selectedSpecies.set(species);
+    this.searchResults.set([]);
     this.searchControl.setValue(species.commonName, { emitEvent: false });
     if (!this.selectedPhoto()) {
       this.photoPreviewUrl.set(species.imageUrl || null);

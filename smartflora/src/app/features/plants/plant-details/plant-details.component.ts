@@ -31,6 +31,7 @@ export class PlantDetailsComponent {
 
   careAdvice = signal<{ score: number; status: string; advice: string } | null>(null);
   lastAdviceHistoryLength = signal<number | null>(null);
+  protected readonly minHistoryForAdvice = 3;
 
   protected readonly plant = toSignal(
     authState(this.auth).pipe(
@@ -51,7 +52,7 @@ export class PlantDetailsComponent {
       const plant = this.plant();
       const historyLength = plant?.history?.length ?? 0;
 
-      if (plant && historyLength > 0 && this.lastAdviceHistoryLength() !== historyLength) {
+      if (plant && historyLength >= this.minHistoryForAdvice && this.lastAdviceHistoryLength() !== historyLength) {
         this.lastAdviceHistoryLength.set(historyLength);
         this.getCareAdvice(plant);
       }

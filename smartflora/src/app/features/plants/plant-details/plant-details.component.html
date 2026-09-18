@@ -58,7 +58,9 @@
 
     <section class="card">
       <h2>Care Advice</h2>
-      @if (careAdvice(); as advice) {
+      @if (sortedHistory().length < minHistoryForAdvice) {
+        <p class="empty-state">Add at least {{ minHistoryForAdvice }} days of data to get AI care advice.</p>
+      } @else if (careAdvice(); as advice) {
         <p class="advice-score">Score: {{ advice.score }} ({{ advice.status }})</p>
         <p class="advice-text">{{ advice.advice }}</p>
       } @else {
