@@ -4,7 +4,7 @@ import { Observable, map } from "rxjs";
 import { environment } from "../../../environment";
 import { MyPlantResponse } from "./my-plants.service";
 
-const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=";
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=";
 
 interface GeminiGenerateContentResponse {
     candidates?: Array<{
@@ -37,6 +37,7 @@ export class GeminiService {
 
     getCareAdvice(plant: MyPlantResponse): Observable<string> {
         const species = plant.plantSpecies;
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const prompt = `
             You are a professional botanist.
             Analyze the following plant care history for the last 7 days and compare it strictly with the ideal parameters provided.
@@ -65,15 +66,19 @@ export class GeminiService {
                 - Be strict. 70% is NOT a "passing" grade for a dying plant.
                 - If there are fewer than 3 records in total, the score MUST NOT exceed 50.
             
+                ADVICE REQUIREMENTS:
+                - The "advice" field MUST start exactly with "As of ${today}, the plant " followed by a brief health summary sentence.
+                - After that, it MUST include one concrete, actionable recommendation with specific timing whenever relevant — e.g. "Water it in 2 days.", "Consider repotting in early spring, since the soil has been compacted for weeks.", "Move it to a spot with more indirect light within the next few days."
+                - Base the recommendation on the gap between the actual care history and the ideal parameters, not generic advice.
+                - Maximum 3 sentences total.
+
                 Return ONLY a valid JSON object with the following structure:
                 {
                   "score": (integer 0-100, reflecting the physical health and care quality),
                   "status": (short string, e.g., "Excellent", "Stressed", "Critical", "Dry"),
-                  "advice": (string, max 2 sentences, focused on the most urgent action)
+                  "advice": (string, see ADVICE REQUIREMENTS above)
                 }
         `;
-
-        console.log("Prompt sent to Gemini API:", prompt);
 
         return this.generateContent(prompt);
     }

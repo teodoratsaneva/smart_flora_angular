@@ -48,6 +48,16 @@ export interface MyPlantResponse {
   imgUrl: string;
   createdAt: string;
   history: MyPlantHistoryEntry[];
+  careAdviceScore: number | null;
+  careAdviceStatus: string | null;
+  careAdviceText: string | null;
+  careAdviceHistoryCount: number | null;
+}
+
+export interface SaveCareAdviceRequest {
+  score: number;
+  status: string;
+  advice: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -68,5 +78,9 @@ export class MyPlantsService {
 
   addHistoryEntry(myPlantId: string, request: CreateHistoryEntryRequest): Observable<MyPlantHistoryEntry> {
     return this.http.post<MyPlantHistoryEntry>(`${environment.apiBaseUrl}/MyPlants/${myPlantId}/history`, request);
+  }
+
+  saveCareAdvice(myPlantId: string, request: SaveCareAdviceRequest): Observable<MyPlantResponse> {
+    return this.http.put<MyPlantResponse>(`${environment.apiBaseUrl}/MyPlants/${myPlantId}/care-advice`, request);
   }
 }

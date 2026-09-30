@@ -23,7 +23,6 @@ export class PlantDetailsComponent {
   protected readonly minHistoryForAdvice = 3;
 
   careAdvice = signal<{ score: number; status: string; advice: string } | null>(null);
-  lastAdviceHistoryLength = signal<number | null>(null);
 
   protected readonly plant = toSignal(
     (() => {
@@ -34,13 +33,26 @@ export class PlantDetailsComponent {
   );
 
   constructor() {
-
     effect(() => {
       const plant = this.plant();
-      const historyLength = plant?.history?.length ?? 0;
+      if (!plant) {
+        return;
+      }
 
-      if (plant && historyLength >= this.minHistoryForAdvice && this.lastAdviceHistoryLength() !== historyLength) {
-        this.lastAdviceHistoryLength.set(historyLength);
+      const hasValidPersistedAdvice = !!plant.careAdviceText && plant.careAdviceScore !== null && plant.careAdviceStatus !== null;
+
+      if (hasValidPersistedAdvice) {
+        this.careAdvice.set({
+          score: plant.careAdviceScore!,
+          status: plant.careAdviceStatus!,
+          advice: plant.careAdviceText!
+        });
+      }
+
+      const historyLength = plant.history?.length ?? 0;
+      const lastAnalyzedCount = plant.careAdviceHistoryCount ?? 0;
+
+      if (historyLength >= this.minHistoryForAdvice && (!hasValidPersistedAdvice || historyLength > lastAnalyzedCount)) {
         this.getCareAdvice(plant);
       }
     });
@@ -61,8 +73,22 @@ export class PlantDetailsComponent {
       next: advice => {
         try {
           const parsedAdvice = JSON.parse(advice);
+
+          if (!parsedAdvice?.advice || typeof parsedAdvice.score !== 'number' || !parsedAdvice.status) {
+            throw new Error('Incomplete advice response from Gemini');
+          }
+
           this.careAdvice.set(parsedAdvice);
-          this.lastAdviceHistoryLength.set(plant.history?.length ?? 0);
+
+          this.myPlantsService
+            .saveCareAdvice(plant.id, {
+              score: parsedAdvice.score,
+              status: parsedAdvice.status,
+              advice: parsedAdvice.advice
+            })
+            .subscribe({
+              error: saveError => console.error('Failed to persist care advice:', saveError)
+            });
         } catch (error) {
           console.error('Error parsing advice:', error);
           alert('Error parsing advice. Please check the console for details.');
