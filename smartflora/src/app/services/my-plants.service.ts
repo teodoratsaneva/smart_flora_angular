@@ -54,8 +54,8 @@ export interface MyPlantResponse {
 export class MyPlantsService {
   private readonly http = inject(HttpClient);
 
-  getMyPlants(userId: string): Observable<MyPlantResponse[]> {
-    return this.http.get<MyPlantResponse[]>(`${environment.apiBaseUrl}/MyPlants`, { params: { userId } });
+  getMyPlants(): Observable<MyPlantResponse[]> {
+    return this.http.get<MyPlantResponse[]>(`${environment.apiBaseUrl}/MyPlants`);
   }
 
   getMyPlantById(id: string): Observable<MyPlantResponse> {

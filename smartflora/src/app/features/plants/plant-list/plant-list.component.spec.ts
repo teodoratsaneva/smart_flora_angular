@@ -1,26 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
-import { Firestore } from '@angular/fire/firestore';
-import { Storage } from '@angular/fire/storage';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PlantListComponent } from './plant-list.component';
 
 describe('PlantListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PlantListComponent],
+      imports: [PlantListComponent, HttpClientTestingModule],
       providers: [
-        {
-          provide: Auth,
-          useValue: {
-            onAuthStateChanged: (next: (user: unknown) => void) => {
-              next(null);
-              return () => {};
-            }
-          }
-        },
-        { provide: Firestore, useValue: {} },
-        { provide: Storage, useValue: {} },
         { provide: Router, useValue: { navigateByUrl: () => Promise.resolve(true) } }
       ]
     }).compileComponents();

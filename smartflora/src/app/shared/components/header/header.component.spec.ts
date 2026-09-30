@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent],
+      imports: [HeaderComponent, HttpClientTestingModule],
       providers: [
-        { provide: Auth, useValue: {} },
         { provide: Router, useValue: { navigateByUrl: () => Promise.resolve(true) } }
       ]
     }).compileComponents();

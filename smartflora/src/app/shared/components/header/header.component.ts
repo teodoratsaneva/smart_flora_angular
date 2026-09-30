@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth, signOut } from '@angular/fire/auth';
+import { AuthService } from '../../../services/auth.service';
 import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
   imports: [ThemeToggleComponent]
 })
 export class HeaderComponent {
-  private readonly auth = inject(Auth);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   protected readonly showInfo = signal(false);
@@ -20,7 +20,7 @@ export class HeaderComponent {
   }
 
   async logout(): Promise<void> {
-    await signOut(this.auth);
+    this.authService.logout();
     await this.router.navigateByUrl('/login');
   }
 }

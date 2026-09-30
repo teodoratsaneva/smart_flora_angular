@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -17,7 +18,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 })
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(Auth);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly loading = signal(false);
@@ -43,10 +44,10 @@ export class RegisterComponent {
     this.errorMessage.set(null);
 
     try {
-      await createUserWithEmailAndPassword(this.auth, email, password);
+      await firstValueFrom(this.authService.register(email, password));
     } catch (error) {
-      console.error('[register] Firebase error:', error);
-      this.errorMessage.set(`Registration failed! Please try again.`);
+      console.error('[register] Registration error:', error);
+      this.errorMessage.set('Registration failed! Please try again.');
       this.loading.set(false);
       return;
     }

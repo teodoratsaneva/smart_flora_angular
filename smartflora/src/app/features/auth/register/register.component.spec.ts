@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RegisterComponent } from './register.component';
 
 describe('RegisterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent],
+      imports: [RegisterComponent, HttpClientTestingModule],
       providers: [
-        { provide: Auth, useValue: {} },
         { provide: Router, useValue: { navigateByUrl: () => Promise.resolve(true) } }
       ]
     }).compileComponents();

@@ -1,7 +1,7 @@
 import { Component, effect, inject, input, output, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { MyPlantsService, MyPlantResponse } from "../../../services/my-plants.service";
-import { User } from "@angular/fire/auth";
+import { AuthUser } from "../../../services/auth.service";
 
 
 @Component({
@@ -12,7 +12,7 @@ import { User } from "@angular/fire/auth";
 export class AddDataPlantComponent {
     myPlantsService = inject(MyPlantsService);
     plant = input<MyPlantResponse | null>(null);
-    user = input<User | null | undefined>();
+    user = input<AuthUser | null | undefined>();
     closed = output<void>();
 
     protected readonly temperature = signal(20);

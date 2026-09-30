@@ -1,9 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Auth, authState } from '@angular/fire/auth';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { of, switchMap } from 'rxjs';
+import { of } from 'rxjs';
 import { MyPlantHistoryEntry, MyPlantResponse, MyPlantsService } from '../../../services/my-plants.service';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { TrendChartComponent } from '../trend-chart/trend-chart.component';
@@ -17,25 +16,20 @@ import { GeminiService } from '../../../services/gemini.service';
 })
 export class PlantDetailsComponent {
   private readonly route = inject(ActivatedRoute);
-  private readonly auth = inject(Auth);
   private readonly myPlantsService = inject(MyPlantsService);
 
   private readonly geminiService = inject(GeminiService);
 
-  protected readonly user = toSignal(authState(this.auth));
   protected readonly minHistoryForAdvice = 3;
 
   careAdvice = signal<{ score: number; status: string; advice: string } | null>(null);
   lastAdviceHistoryLength = signal<number | null>(null);
 
   protected readonly plant = toSignal(
-    authState(this.auth).pipe(
-      switchMap(user => {
-        const id = this.route.snapshot.paramMap.get('id');
-
-        return user && id ? this.myPlantsService.getMyPlantById(id) : of(undefined);
-      })
-    ),
+    (() => {
+      const id = this.route.snapshot.paramMap.get('id');
+      return id ? this.myPlantsService.getMyPlantById(id) : of(undefined);
+    })(),
     { initialValue: undefined }
   );
 

@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(Auth);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly loading = signal(false);
@@ -33,7 +34,7 @@ export class LoginComponent {
     this.errorMessage.set(null);
 
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      await firstValueFrom(this.authService.login(email, password));
     } catch {
       this.errorMessage.set('Invalid email or password. Please try again.');
       this.loading.set(false);

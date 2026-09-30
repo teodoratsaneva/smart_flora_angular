@@ -1,15 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { Firestore } from '@angular/fire/firestore';
-import { Storage } from '@angular/fire/storage';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PlantService } from './plant.service';
 
 describe('PlantService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: Firestore, useValue: {} },
-        { provide: Storage, useValue: {} }
-      ]
+      imports: [HttpClientTestingModule]
     });
   });
 

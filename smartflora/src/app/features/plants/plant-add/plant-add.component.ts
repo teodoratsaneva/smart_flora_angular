@@ -2,8 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Auth, authState } from '@angular/fire/auth';
 import { debounceTime, distinctUntilChanged, firstValueFrom, of, switchMap } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 import { PlantService } from '../../../services/plant.service';
 import { PlantSpeciesService, PlantSpeciesOption } from '../../../services/plant-species.service';
 import { MyPlantsService } from '../../../services/my-plants.service';
@@ -17,7 +17,7 @@ import { HeaderComponent } from '../../../shared/components/header/header.compon
 })
 export class PlantAddComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(Auth);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly plantService = inject(PlantService);
   private readonly plantSpeciesService = inject(PlantSpeciesService);
@@ -86,7 +86,7 @@ export class PlantAddComponent {
       return;
     }
 
-    const user = await firstValueFrom(authState(this.auth));
+    const user = this.authService.currentUser();
     if (!user) {
       return;
     }
@@ -96,11 +96,11 @@ export class PlantAddComponent {
 
     try {
       const photo = this.selectedPhoto();
-      const imgUrl = photo ? await this.plantService.uploadPlantPhoto(user.uid, photo) : species.imageUrl;
+      const imgUrl = photo ? await this.plantService.uploadPlantPhoto(photo) : species.imageUrl;
 
       await firstValueFrom(
         this.myPlantsService.createMyPlant({
-          userId: user.uid,
+          userId: user.id,
           plantSpeciesId: species.id,
           imgUrl,
           createdAt: new Date().toISOString()
