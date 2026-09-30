@@ -6,29 +6,29 @@
 
     <header class="plant-header">
       @if (plant.imgUrl) {
-        <img [src]="plant.imgUrl" [alt]="plant.name" class="plant-photo" />
+        <img [src]="plant.imgUrl" [alt]="plant.plantSpecies?.name" class="plant-photo" />
       } @else {
         <div class="plant-photo placeholder">🌱</div>
       }
-      <h1>{{ plant.name }}</h1>
-      <p class="variety">{{ plant.variety }}</p>
+      <h1>{{ plant.plantSpecies?.name }}</h1>
+      <p class="variety">{{ plant.plantSpecies?.species }}</p>
     </header>
 
-    @if (plant.requirements; as req) {
+    @if (plant.plantSpecies; as species) {
       <section class="card">
         <h2>Ideal Conditions</h2>
         <dl class="requirements">
-          @if (req.watering) {
-            <div><dt>Watering</dt><dd>{{ req.watering }}</dd></div>
+          @if (species.watering) {
+            <div><dt>Watering</dt><dd>{{ species.watering }}</dd></div>
           }
-          @if (req.sunlight) {
-            <div><dt>Sunlight</dt><dd>{{ req.sunlight }}</dd></div>
+          @if (species.sunlight?.length) {
+            <div><dt>Sunlight</dt><dd>{{ species.sunlight.join(', ') }}</dd></div>
           }
-          @if (req.careLevel) {
-            <div><dt>Care Level</dt><dd>{{ req.careLevel }}</dd></div>
+          @if (species.careLevel) {
+            <div><dt>Care Level</dt><dd>{{ species.careLevel }}</dd></div>
           }
-          @if (req.maintenance) {
-            <div><dt>Maintenance</dt><dd>{{ req.maintenance }}</dd></div>
+          @if (species.maintenance) {
+            <div><dt>Maintenance</dt><dd>{{ species.maintenance }}</dd></div>
           }
         </dl>
       </section>
@@ -44,9 +44,9 @@
         <p class="empty-state">No data entered yet. Use "Add Data" to log care.</p>
       } @else {
         <ul class="history-list">
-          @for (entry of sortedHistory(); track entry.date) {
+          @for (entry of sortedHistory(); track entry.id) {
             <li class="history-entry">
-              <span class="history-date">{{ historyDate(entry) | date: 'medium' }}</span>
+              <span class="history-date">{{ entryDate(entry) | date: 'medium' }}</span>
               <span class="history-value">🌡️ {{ entry.temperature }}°C</span>
               <span class="history-value">💧 {{ entry.soilMoisture }}%</span>
               <span class="history-value">{{ entry.watered ? '✅ Watered' : '' }}</span>

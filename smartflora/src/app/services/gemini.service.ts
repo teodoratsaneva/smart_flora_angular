@@ -2,9 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable, map } from "rxjs";
 import { environment } from "../../../environment";
-import { Plant } from "../models/plant.model";
+import { MyPlantResponse } from "./my-plants.service";
 
-const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=";
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=";
 
 interface GeminiGenerateContentResponse {
     candidates?: Array<{
@@ -35,11 +35,12 @@ export class GeminiService {
         );
     }
 
-    getCareAdvice(plant: Plant): Observable<string> {
+    getCareAdvice(plant: MyPlantResponse): Observable<string> {
+        const species = plant.plantSpecies;
         const prompt = `
-            You are a professional botanist. 
+            You are a professional botanist.
             Analyze the following plant care history for the last 7 days and compare it strictly with the ideal parameters provided.
-            Plant: ${plant.name} ${plant.variety}
+            Plant: ${species?.name ?? 'Unknown'} ${species?.species ?? ''}
             Care History (found in the last 7 days):
             ${plant.history?.map(entry =>
                 `Date: ${entry.date}
@@ -49,10 +50,10 @@ export class GeminiService {
             ).join('\n')
             }
             Ideal Parameters:
-            Watering: ${plant.requirements?.watering || 'Not specified'}
-            Sunlight: ${plant.requirements?.sunlight || 'Not specified'}
-            Care Level: ${plant.requirements?.careLevel || 'Not specified'}
-            Maintenance: ${plant.requirements?.maintenance || 'Not specified'}
+            Watering: ${species?.watering || 'Not specified'}
+            Sunlight: ${species?.sunlight?.join(', ') || 'Not specified'}
+            Care Level: ${species?.careLevel || 'Not specified'}
+            Maintenance: ${species?.maintenance || 'Not specified'}
 
             SCORING RULES:
                 - Start with 100 points.

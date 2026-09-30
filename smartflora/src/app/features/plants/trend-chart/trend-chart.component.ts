@@ -1,6 +1,5 @@
 import { Component, computed, input, signal } from '@angular/core';
-import { HistoryEntry } from '../../../models/plant.model';
-import { historyDate } from '../../../shared/utils/history-date.util';
+import { MyPlantHistoryEntry } from '../../../services/my-plants.service';
 
 interface ChartPoint {
   x: number;
@@ -29,7 +28,7 @@ const VIEW_CONFIG: Record<ViewMode, { periodLengthDays: number; periodCount: num
   styleUrl: './trend-chart.component.css'
 })
 export class TrendChartComponent {
-  readonly history = input<HistoryEntry[]>([]);
+  readonly history = input<MyPlantHistoryEntry[]>([]);
 
   protected readonly viewMode = signal<ViewMode>('week');
 
@@ -43,9 +42,9 @@ export class TrendChartComponent {
   }
 
   protected readonly chart = computed(() => {
-    const entryByDay = new Map<string, HistoryEntry>();
+    const entryByDay = new Map<string, MyPlantHistoryEntry>();
     for (const entry of this.history()) {
-      entryByDay.set(this.dayKey(historyDate(entry)), entry);
+      entryByDay.set(this.dayKey(new Date(entry.date)), entry);
     }
 
     const today = new Date();

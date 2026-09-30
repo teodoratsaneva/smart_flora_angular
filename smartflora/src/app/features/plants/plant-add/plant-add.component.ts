@@ -6,6 +6,7 @@ import { Auth, authState } from '@angular/fire/auth';
 import { debounceTime, distinctUntilChanged, firstValueFrom, of, switchMap } from 'rxjs';
 import { PlantService } from '../../../services/plant.service';
 import { PlantSpeciesService, PlantSpeciesOption } from '../../../services/plant-species.service';
+import { MyPlantsService } from '../../../services/my-plants.service';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 
 @Component({
@@ -20,6 +21,7 @@ export class PlantAddComponent {
   private readonly router = inject(Router);
   private readonly plantService = inject(PlantService);
   private readonly plantSpeciesService = inject(PlantSpeciesService);
+  private readonly myPlantsService = inject(MyPlantsService);
 
   protected readonly searchControl = this.fb.nonNullable.control('');
 
@@ -96,18 +98,14 @@ export class PlantAddComponent {
       const photo = this.selectedPhoto();
       const imgUrl = photo ? await this.plantService.uploadPlantPhoto(user.uid, photo) : species.imageUrl;
 
-      await this.plantService.addPlant(user.uid, {
-        name: species.commonName,
-        variety: species.scientificName || 'Standard',
-        imgUrl,
-        requirements: {
-          watering: species.requirements?.watering,
-          sunlight: species.requirements?.sunlight?.join(', '),
-          careLevel: species.requirements?.careLevel,
-          maintenance: species.requirements?.maintenance
-        },
-        createdAt: new Date()
-      });
+      await firstValueFrom(
+        this.myPlantsService.createMyPlant({
+          userId: user.uid,
+          plantSpeciesId: species.id,
+          imgUrl,
+          createdAt: new Date().toISOString()
+        })
+      );
     } catch (error) {
       console.error('[plant-add] Failed to save plant:', error);
       this.errorMessage.set('Failed to save the plant. Please try again.');

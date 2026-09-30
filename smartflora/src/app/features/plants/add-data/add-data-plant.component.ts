@@ -1,6 +1,6 @@
 import { Component, effect, inject, input, output, signal } from "@angular/core";
-import { PlantService } from "../../../services/plant.service";
-import { Plant } from "../../../models/plant.model";
+import { firstValueFrom } from "rxjs";
+import { MyPlantsService, MyPlantResponse } from "../../../services/my-plants.service";
 import { User } from "@angular/fire/auth";
 
 
@@ -10,8 +10,8 @@ import { User } from "@angular/fire/auth";
     styleUrls: ["./add-data-plant.component.css"]
 })
 export class AddDataPlantComponent {
-    plantService = inject(PlantService);
-    plant = input<Plant | null>(null);
+    myPlantsService = inject(MyPlantsService);
+    plant = input<MyPlantResponse | null>(null);
     user = input<User | null | undefined>();
     closed = output<void>();
 
@@ -48,11 +48,15 @@ export class AddDataPlantComponent {
         this.errorMessage.set(null);
 
         try {
-            await this.plantService.addPlantData(user.uid, plant.id, {
-                temperature: this.temperature(),
-                soilMoisture: this.soilMoisture(),
-                watered: this.watered()
-            });
+            await firstValueFrom(
+                this.myPlantsService.addHistoryEntry(plant.id, {
+                    myPlantId: plant.id,
+                    date: new Date().toISOString(),
+                    temperature: this.temperature(),
+                    soilMoisture: this.soilMoisture(),
+                    watered: this.watered()
+                })
+            );
 
             this.showToast('Data saved successfully!');
             this.closeAddData();

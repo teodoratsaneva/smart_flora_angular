@@ -1,7 +1,7 @@
 @if (plant(); as plant) {
   <div class="modal-backdrop" (click)="closeAddData()">
     <div class="modal-card" (click)="$event.stopPropagation()">
-      <h2>{{ plant.name }}</h2>
+      <h2>{{ plant.plantSpecies?.name }}</h2>
 
       <label for="temperature">Temperature ({{ temperature() }}°C)</label>
       <input

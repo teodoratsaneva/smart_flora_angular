@@ -17,12 +17,12 @@
       @for (plant of plants(); track plant.id) {
         <article class="plant-card">
           @if (plant.imgUrl) {
-            <img [src]="plant.imgUrl" [alt]="plant.name" class="plant-photo" />
+            <img [src]="plant.imgUrl" [alt]="plant.plantSpecies?.name" class="plant-photo" />
           } @else {
             <div class="plant-photo placeholder">🌱</div>
           }
-          <h2>{{ plant.name }}</h2>
-          <p class="variety">{{ plant.variety }}</p>
+          <h2>{{ plant.plantSpecies?.name }}</h2>
+          <p class="variety">{{ plant.plantSpecies?.species }}</p>
           <div class="card-actions">
             <a [routerLink]="['/plants', plant.id]" class="secondary">Details</a>
             <button

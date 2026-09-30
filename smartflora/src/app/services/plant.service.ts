@@ -1,38 +1,9 @@
-import { Injectable, inject, signal } from '@angular/core';
-import {
-  CollectionReference,
-  DocumentReference,
-  Firestore,
-  Timestamp,
-  addDoc,
-  arrayUnion,
-  collection,
-  collectionData,
-  doc,
-  docData,
-  getDoc,
-  updateDoc
-} from '@angular/fire/firestore';
+import { Injectable, inject } from '@angular/core';
 import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
-import { Observable } from 'rxjs';
-import { HistoryEntry, Plant } from '../models/plant.model';
 
 @Injectable({ providedIn: 'root' })
 export class PlantService {
-  private readonly firestore = inject(Firestore);
   private readonly storage = inject(Storage);
-
-  getPlants(userId: string): Observable<Plant[]> {
-    return collectionData(this.plantsCollection(userId), { idField: 'id' });
-  }
-
-  addPlant(userId: string, plant: Omit<Plant, 'id'>): Promise<void> {
-    return addDoc(this.plantsCollection(userId), plant).then(() => undefined);
-  }
-
-  getPlant(userId: string, plantId: string): Observable<Plant | undefined> {
-    return docData(this.plantDoc(userId, plantId), { idField: 'id' });
-  }
 
   async uploadPlantPhoto(userId: string, file: File): Promise<string> {
     const photoRef = ref(this.storage, `users/${userId}/plants/${Date.now()}-${file.name}`);
@@ -40,29 +11,5 @@ export class PlantService {
     await uploadBytes(photoRef, file);
 
     return getDownloadURL(photoRef);
-  }
-
-  async addPlantData(userId: string, plantId: string, data: { temperature: number; soilMoisture: number; watered: boolean }): Promise<void> {
-    const plantRef = this.plantDoc(userId, plantId);
-    const plantSnapshot = await getDoc(plantRef);
-    const history = (plantSnapshot.data()?.history ?? []) as HistoryEntry[];
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    await updateDoc(plantRef, {
-      history: arrayUnion({
-        ...data,
-        date: new Date()
-      })
-    });
-  }
-
-  private plantsCollection(userId: string): CollectionReference<Plant> {
-    return collection(this.firestore, `users/${userId}/plants`) as CollectionReference<Plant>;
-  }
-
-  private plantDoc(userId: string, plantId: string): DocumentReference<Plant> {
-    return doc(this.firestore, `users/${userId}/plants/${plantId}`) as DocumentReference<Plant>;
   }
 }
