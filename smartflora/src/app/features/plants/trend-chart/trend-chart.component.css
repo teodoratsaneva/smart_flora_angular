@@ -1,15 +1,15 @@
 h2 {
-  margin: 0 0 1rem;
-  font-size: 1.1rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.4rem;
   color: var(--color-primary);
 }
 
 .legend {
   display: flex;
   justify-content: center;
-  gap: 1.25rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.8rem;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
   color: var(--color-text-muted);
 }
 
@@ -51,9 +51,9 @@ h2 {
 .view-toggle-btn {
   border: none;
   background: transparent;
-  padding: 0.3rem 0.9rem;
+  padding: 0.4rem 1.1rem;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--color-text-muted);
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;

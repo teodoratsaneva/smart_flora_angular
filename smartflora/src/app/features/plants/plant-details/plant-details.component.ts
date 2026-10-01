@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, inject, signal, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -10,7 +9,7 @@ import { GeminiService } from '../../../services/gemini.service';
 
 @Component({
   selector: 'app-plant-details',
-  imports: [HeaderComponent, RouterLink, DatePipe, TrendChartComponent],
+  imports: [HeaderComponent, RouterLink, TrendChartComponent],
   templateUrl: './plant-details.component.html',
   styleUrl: './plant-details.component.css'
 })
