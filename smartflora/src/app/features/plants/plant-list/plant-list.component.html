@@ -3,9 +3,6 @@
 <div class="plants-page">
   <header class="plants-header">
     <h1>My Plants</h1>
-    @if (user()?.email) {
-      <p class="user-email">{{ user()?.email }}</p>
-    }
   </header>
 
   @if (plants().length === 0) {
@@ -23,6 +20,11 @@
           }
           <h2>{{ plant.plantSpecies?.name }}</h2>
           <p class="variety">{{ plant.plantSpecies?.species }}</p>
+          @if (statusTier(plant); as tier) {
+            <span class="status-badge" [class]="'status-' + tier">
+              {{ statusIcon(tier) }} Status: {{ plant.careAdviceStatus }}
+            </span>
+          }
           <div class="card-actions">
             <a [routerLink]="['/plants', plant.id]" class="secondary">Details</a>
             <button

@@ -49,4 +49,26 @@ export class PlantListComponent {
   tooltipMessage(plant: MyPlantResponse) {
     return this.isDataEnteredToday(plant) ? 'You have already entered data for this plant today.' : '';
   }
+
+  protected statusTier(plant: MyPlantResponse): 'good' | 'warning' | 'critical' | null {
+    const score = plant.careAdviceScore;
+
+    if (score === null) {
+      return null;
+    }
+
+    if (score >= 80) {
+      return 'good';
+    }
+
+    if (score >= 40) {
+      return 'warning';
+    }
+
+    return 'critical';
+  }
+
+  protected statusIcon(tier: 'good' | 'warning' | 'critical'): string {
+    return tier === 'good' ? '✅' : tier === 'warning' ? '⚠️' : '⛔';
+  }
 }
